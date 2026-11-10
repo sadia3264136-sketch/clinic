@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Demo Clinic | Book an appointment</title>
+<meta name="description" content="Choose a time, get a token, and see the doctor. Book general, dental, skin and lab appointments online.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<a class="skip" href="#book">Skip to booking</a>
+
+<header class="top">
+  <a class="brand" href="#top" aria-label="Home">
+    <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><rect width="30" height="30" rx="8" fill="#0B6E5B"/><path d="M12 7h6v5h5v6h-5v5h-6v-5H7v-6h5z" fill="#fff"/></svg>
+    <span id="brandName">Demo Clinic</span>
+  </a>
+  <nav aria-label="Main">
+    <a href="#fees">Services and fees</a>
+    <a href="#doctors">Doctors</a>
+    <a href="#timings">Timings</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>See the doctor at a time you choose.</h1>
+      <p class="lede">Pick a service, a day and a free time. You get a token straight away, so there is no phone call and no waiting on the line.</p>
+      <p class="ur" lang="ur-Latn">Waqt chunein, token lein, aur seedha doctor se milein.</p>
+      <p class="emergency" role="note">Is this an emergency? Call <strong id="emNum">1122</strong> or go to the nearest hospital. Please do not book online.</p>
+    </div>
+
+    <div class="slip" id="book">
+      <form id="bookForm" novalidate>
+        <h2 class="slip-title">Book an appointment</h2>
+
+        <label for="service">Service</label>
+        <select id="service"></select>
+        <p class="doctor-line" id="doctorLine"></p>
+
+        <label for="date">Date</label>
+        <input type="date" id="date">
+
+        <fieldset class="slots">
+          <legend>Free times</legend>
+          <div id="slots" class="chips" role="radiogroup" aria-label="Free times"></div>
+          <p id="slotNote" class="note" aria-live="polite"></p>
+        </fieldset>
+
+        <label for="name">Your name</label>
+        <input id="name" type="text" autocomplete="name" maxlength="80">
+
+        <label for="phone">Mobile number</label>
+        <input id="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="0300 1234567">
+        <p class="field-error" id="phoneErr" aria-live="polite"></p>
+
+        <input class="hp" type="text" id="website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+        <button type="submit" class="btn" id="submitBtn">Book appointment</button>
+        <p id="formMsg" class="form-msg" role="status" aria-live="polite"></p>
+      </form>
+
+      <div id="token" class="token" hidden tabindex="-1">
+        <p class="token-label">Appointment token</p>
+        <p class="token-id" id="tokId"></p>
+        <dl class="token-list">
+          <div><dt>Patient</dt><dd id="tokName"></dd></div>
+          <div><dt>Service</dt><dd id="tokService"></dd></div>
+          <div><dt>Doctor</dt><dd id="tokDoctor"></dd></div>
+          <div><dt>Date</dt><dd id="tokDate"></dd></div>
+          <div><dt>Time</dt><dd id="tokTime"></dd></div>
+        </dl>
+        <p class="token-help">Show this token at reception. To cancel or reschedule, message us on WhatsApp at least 3 hours before.</p>
+        <button type="button" class="btn btn-quiet" id="againBtn">Book another appointment</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="fees">
+    <h2>Services and fees</h2>
+    <ul class="fee-board" id="feeBoard"></ul>
+    <p class="small" id="payNote"></p>
+  </section>
+
+  <section class="band" id="doctors">
+    <h2>Doctors</h2>
+    <ul class="doctor-list" id="doctorList"></ul>
+  </section>
+
+  <section class="band" id="timings">
+    <h2>Timings</h2>
+    <table class="hours">
+      <thead><tr><th scope="col">Service</th><th scope="col">Days and hours</th></tr></thead>
+      <tbody id="hoursBody"></tbody>
+    </table>
+  </section>
+
+  <section class="band" id="contact">
+    <h2>Contact</h2>
+    <div class="contact">
+      <p id="addr"></p>
+      <p><a id="telLink" href="#"></a></p>
+      <a class="btn btn-wa" id="waLink" href="#" rel="noopener">Message us on WhatsApp</a>
+    </div>
+  </section>
+
+  <section class="band" id="faq">
+    <h2>Common questions</h2>
+    <div id="faqList" class="faq"></div>
+  </section>
+</main>
+
+<footer class="foot">
+  <p><span id="footName">Demo Clinic</span> is a demo clinic made for testing software. It is not a real medical service.</p>
+  <p><a href="/admin.html">Staff sign in</a></p>
+</footer>
+
+<script src="/site-config.js"></script>
+<script src="/app.js"></script>
+</body>
+</html>
