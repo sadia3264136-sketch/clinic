@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Staff | Appointments</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="admin-wrap">
+  <h1>Appointments</h1>
+  <p class="small"><a href="/">Back to the website</a></p>
+
+  <form class="admin-key" id="keyForm">
+    <label for="apiKey">Staff key</label>
+    <input id="apiKey" type="password" autocomplete="off">
+    <button class="btn" type="submit">Open appointments</button>
+  </form>
+
+  <section id="panel" hidden>
+    <div class="admin-bar">
+      <div><label for="from">From</label><input type="date" id="from"></div>
+      <div><label for="to">To</label><input type="date" id="to"></div>
+      <button class="btn" type="button" id="reload">Refresh</button>
+      <button class="btn btn-quiet" type="button" id="signOut">Sign out</button>
+    </div>
+    <div class="counts" id="counts"></div>
+    <p class="admin-msg" id="adminMsg" role="status" aria-live="polite"></p>
+    <div class="table-wrap">
+      <table class="appts">
+        <thead><tr>
+          <th scope="col">Date</th><th scope="col">Time</th><th scope="col">Patient</th><th scope="col">Phone</th>
+          <th scope="col">Service</th><th scope="col">Booked via</th><th scope="col">Status</th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <p class="empty" id="empty" hidden>No appointments in this date range. Change the dates, or book one on the website.</p>
+    </div>
+  </section>
+</div>
+<script src="/admin.js"></script>
+</body>
+</html>
