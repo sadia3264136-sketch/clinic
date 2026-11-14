@@ -282,4 +282,43 @@
     chatBubble(text, 'user');
     clinicReply(text);
   });
+
+  // ---------- separate Gemini AI assistant ----------
+  var aiLaunch = $('aiLaunch');
+  var aiPanel = $('aiPanel');
+  var aiClose = $('aiClose');
+  var aiMessages = $('aiMessages');
+  var aiForm = $('aiForm');
+  var aiInput = $('aiInput');
+  var aiSending = false;
+
+  function aiBubble(text, who) {
+    var b = el('div', 'ai-bubble ' + who, text);
+    aiMessages.appendChild(b);
+    aiMessages.scrollTop = aiMessages.scrollHeight;
+    return b;
+  }
+  function openAI() {
+    aiPanel.hidden = false;
+    aiLaunch.setAttribute('aria-expanded', 'true');
+    if (!aiMessages.children.length) aiBubble('Assalam-o-alaikum! I am the Gemini AI clinic assistant. Ask me in English or Roman Urdu. I can explain clinic services and help you find the booking form.\n\nFor emergencies, call ' + C.emergency + ' or go to the nearest hospital.', 'ai');
+    aiInput.focus();
+  }
+  function closeAI() { aiPanel.hidden = true; aiLaunch.setAttribute('aria-expanded', 'false'); aiLaunch.focus(); }
+  aiLaunch.addEventListener('click', function () { aiPanel.hidden ? openAI() : closeAI(); });
+  aiClose.addEventListener('click', closeAI);
+  aiForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (aiSending) return;
+    var text = aiInput.value.trim();
+    if (!text) return;
+    aiBubble(text, 'user'); aiInput.value = ''; aiSending = true;
+    var send = aiForm.querySelector('button'); send.disabled = true; send.textContent = '...';
+    var waiting = aiBubble('Thinking…', 'ai');
+    fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) })
+      .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (res) { waiting.remove(); aiBubble(res.j.reply || res.j.message || 'I could not answer right now. Please use the booking form or call the clinic.', 'ai'); })
+      .catch(function () { waiting.remove(); aiBubble('AI assistant could not reach the server. Please use the booking form or try again.', 'ai'); })
+      .then(function () { aiSending = false; send.disabled = false; send.textContent = 'Send'; aiInput.focus(); });
+  });
 })();

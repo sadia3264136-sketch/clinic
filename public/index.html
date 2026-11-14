@@ -143,6 +143,24 @@
   </section>
 </aside>
 
+<aside class="ai-chatbot" aria-label="Gemini AI Clinic Assistant">
+  <button class="ai-launch" id="aiLaunch" type="button" aria-expanded="false" aria-controls="aiPanel">
+    <span class="ai-spark" aria-hidden="true">✦</span><span>AI Assistant</span>
+  </button>
+  <section class="ai-panel" id="aiPanel" hidden>
+    <header class="ai-head">
+      <div><strong>Gemini AI Assistant</strong><small>Clinic information assistant</small></div>
+      <button class="ai-close" id="aiClose" type="button" aria-label="Close AI assistant">×</button>
+    </header>
+    <div class="ai-messages" id="aiMessages" role="log" aria-live="polite"></div>
+    <form class="ai-form" id="aiForm">
+      <label class="sr-only" for="aiInput">Ask the AI assistant</label>
+      <input id="aiInput" type="text" maxlength="700" autocomplete="off" placeholder="Ask in English or Roman Urdu..." required>
+      <button type="submit" aria-label="Send to AI">Send</button>
+    </form>
+  </section>
+</aside>
+
 <script src="/site-config.js"></script>
 <script src="/app.js"></script>
 </body>
