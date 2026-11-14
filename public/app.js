@@ -226,10 +226,23 @@
     chatLaunch.focus();
   }
 
+  function openBooking(serviceName) {
+    if (serviceName) { svcSel.value = serviceName; doctorLine(); loadSlots(); }
+    closeChat();
+    $('book').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    setTimeout(function () { svcSel.focus(); }, 450);
+  }
+
   function clinicReply(message) {
     var q = String(message || '').toLowerCase();
-    if (/book|appointment|booking|appointment book|موعد|وقت لینا/.test(q)) {
-      setTimeout(function () { chatBubble('Bilkul. Neeche booking form par service, date aur free time select karein. Main aap ko form tak le ja raha hoon.', 'bot'); $('book').scrollIntoView({ behavior: 'smooth' }); svcSel.focus(); }, 250);
+    if (/confirm|confirmed|confirm hui|booking ho gai|booking hogi|book ho gai|book hui|کیا میری booking/.test(q)) {
+      chatBubble('Nahi, abhi booking confirm nahi hui. Booking tab confirm hogi jab aap form mein date, free time, naam aur mobile number submit karengi aur appointment token screen par aa jayega.', 'bot');
+      return;
+    }
+    if (/book|appointment|booking|form|appointment book|موعد|وقت لینا/.test(q)) {
+      var serviceName = /skin|جلد/.test(q) ? 'Skin' : (/dental|dentist/.test(q) ? 'Dental' : (/lab|blood test/.test(q) ? 'Lab Tests' : null));
+      chatBubble('Bilkul. Booking form khol raha hoon' + (serviceName ? ' — ' + serviceName + ' select kar diya hai.' : '.') , 'bot');
+      setTimeout(function () { openBooking(serviceName); }, 250);
       return;
     }
     if (/fee|fees|price|cost|charges|rate|فیس|قیمت/.test(q)) {
