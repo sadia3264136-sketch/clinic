@@ -195,4 +195,78 @@
     loadSlots();
     $('service').focus();
   });
+
+  // ---------- website clinic assistant ----------
+  var chatLaunch = $('chatLaunch');
+  var chatPanel = $('chatPanel');
+  var chatClose = $('chatClose');
+  var chatMessages = $('chatMessages');
+  var chatForm = $('chatForm');
+  var chatInput = $('chatInput');
+  var chatSuggestions = $('chatSuggestions');
+
+  function chatBubble(text, who) {
+    var b = el('div', 'chat-bubble ' + who, text);
+    chatMessages.appendChild(b);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function openChat() {
+    chatPanel.hidden = false;
+    chatLaunch.setAttribute('aria-expanded', 'true');
+    if (!chatMessages.children.length) {
+      chatBubble('Assalam-o-alaikum! I can help with services, fees, timings and appointment booking. Aap kya poochna chahte hain?', 'bot');
+    }
+    chatInput.focus();
+  }
+
+  function closeChat() {
+    chatPanel.hidden = true;
+    chatLaunch.setAttribute('aria-expanded', 'false');
+    chatLaunch.focus();
+  }
+
+  function clinicReply(message) {
+    var q = String(message || '').toLowerCase();
+    if (/book|appointment|booking|appointment book|موعد|وقت لینا/.test(q)) {
+      setTimeout(function () { chatBubble('Bilkul. Neeche booking form par service, date aur free time select karein. Main aap ko form tak le ja raha hoon.', 'bot'); $('book').scrollIntoView({ behavior: 'smooth' }); svcSel.focus(); }, 250);
+      return;
+    }
+    if (/fee|fees|price|cost|charges|rate|فیس|قیمت/.test(q)) {
+      chatBubble(C.services.map(function (s) { return s.name + ': ' + s.fee + ' (' + s.doctor + ')'; }).join('\n') + '\n\nLab tests ki price test ke hisaab se hoti hai.', 'bot');
+      return;
+    }
+    if (/doctor|doc|physician|dentist|dermat|ڈاکٹر/.test(q)) {
+      chatBubble(C.doctors.map(function (d) { return d.name + ' — ' + d.role + '. ' + d.days; }).join('\n'), 'bot');
+      return;
+    }
+    if (/time|timing|open|close|hours|when|اوقات|ٹائمنگ/.test(q)) {
+      chatBubble(C.hours.map(function (h) { return h.what + ': ' + h.when; }).join('\n'), 'bot');
+      return;
+    }
+    if (/parking|پارک/.test(q)) { chatBubble('Ji, clinic ke samne parking available hai.', 'bot'); return; }
+    if (/fast|blood|فاسٹ|خون/.test(q)) { chatBubble('Fasting blood test ke liye 8–10 ghante kuch na khayein; sirf pani pi sakte hain. Lab se test ki requirement confirm kar lein.', 'bot'); return; }
+    if (/report|رپورٹ/.test(q)) { chatBubble('Lab reports aam tor par 24 ghante mein WhatsApp par mil jati hain.', 'bot'); return; }
+    if (/cancel|reschedule|منسوخ|تبدیل/.test(q)) { chatBubble('Cancel ya reschedule kam az kam 3 ghante pehle clinic ko batayein: ' + C.phone, 'bot'); return; }
+    if (/hello|hi|salam|assalam|aoa|ہیلو|سلام/.test(q)) { chatBubble('Wa-alaikum-assalam! Services, fees, timings ya appointment booking ke baare mein pooch sakte hain.', 'bot'); return; }
+    chatBubble('Main services, fees, doctors, timings, parking, lab tests aur appointment booking mein help kar sakta hoon. Misal: “Dental ki fee kya hai?”', 'bot');
+  }
+
+  chatLaunch.addEventListener('click', function () { chatPanel.hidden ? openChat() : closeChat(); });
+  chatClose.addEventListener('click', closeChat);
+  chatForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var text = chatInput.value.trim();
+    if (!text) return;
+    chatBubble(text, 'user');
+    chatInput.value = '';
+    clinicReply(text);
+  });
+  chatSuggestions.addEventListener('click', function (e) {
+    var button = e.target.closest('[data-chat]');
+    if (!button) return;
+    var text = button.getAttribute('data-chat');
+    chatBubble(text, 'user');
+    clinicReply(text);
+  });
 })();
