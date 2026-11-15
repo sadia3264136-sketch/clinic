@@ -168,7 +168,33 @@
     })
       .then(function (r) { return r.json().then(function (j) { return { status: r.status, j: j }; }); })
       .then(function (res) {
-        if (res.j.result === 'ok' && res.j.appointment) { showToken(res.j.appointment); return; }
+        if (res.j.result === 'ok' && res.j.appointment) {
+          var appointment = res.j.appointment;
+          fetch('https://practiceproject99.app.n8n.cloud/webhook/clinic-booking', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              patientName: name,
+              phone: phone,
+              service: svcSel.value,
+              date: $('date').value,
+              time: chosen.value,
+              bookingToken: String(appointment.id || '')
+            })
+          })
+            .then(function (sheetRes) {
+              if (!sheetRes.ok) throw new Error('n8n webhook returned ' + sheetRes.status);
+              return sheetRes.json();
+            })
+            .then(function (sheetResult) {
+              if (!sheetResult || sheetResult.ok !== true) throw new Error('Booking was not acknowledged by n8n');
+              showToken(appointment, '');
+            })
+            .catch(function () {
+              showToken(appointment, 'Appointment confirmed, but it could not be added to the Google Sheet. Please contact the clinic to verify the record.');
+            });
+          return;
+        }
         if (res.status === 409) { setMsg('That time was just taken. Pick another free time.'); loadSlots(); return; }
         setMsg(res.j.message || 'Could not book. Please try again.');
       })
@@ -176,7 +202,8 @@
       .then(function () { btn.disabled = false; btn.textContent = 'Book appointment'; });
   });
 
-  function showToken(a) {
+  function showToken(a, syncWarning) {
+    $('sheetSyncMsg').textContent = syncWarning || '';
     $('tokId').textContent = a.id;
     $('tokName').textContent = a.patient_name;
     $('tokService').textContent = a.service;
