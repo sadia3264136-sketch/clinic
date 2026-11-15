@@ -142,16 +142,23 @@
   $('bookForm').addEventListener('submit', function (e) {
     e.preventDefault();
     $('phoneErr').textContent = '';
+    $('emailErr').textContent = '';
     setMsg('');
     var chosen = document.querySelector('input[name=slot]:checked');
     var name = $('name').value.trim();
     var phone = normPhone($('phone').value);
+    var email = $('email').value.trim();
 
     if (!chosen) { setMsg('Choose a free time first.'); return; }
     if (name.length < 2) { setMsg('Enter your name.'); $('name').focus(); return; }
     if (phone.length < 10 || phone.length > 15) {
       $('phoneErr').textContent = 'Enter a valid mobile number, for example 0300 1234567.';
       $('phone').focus();
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      $('emailErr').textContent = 'Enter a valid email address for your confirmation.';
+      $('email').focus();
       return;
     }
 
@@ -175,6 +182,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               patientName: name,
+              patientEmail: email,
               phone: phone,
               service: svcSel.value,
               date: $('date').value,
